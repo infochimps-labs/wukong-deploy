@@ -35,8 +35,17 @@ module Wukong
     
     def self.boot! path=nil
       self.root = path if path
+      capture_original_settings
       load_base_settings
       load_env_specific_settings
+    end
+
+    def self.capture_original_settings
+      @original_settings = Wukong::Local::Configuration.dup
+    end
+
+    def self.original_settings
+      @original_settings
     end
 
     def self.logger
@@ -71,4 +80,3 @@ module Wukong
     end
   end
 end
-
