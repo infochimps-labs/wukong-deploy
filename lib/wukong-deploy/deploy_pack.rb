@@ -1,82 +1,126 @@
 module Wukong
   module Deploy
 
+    # Boot the deploy pack, reading all available +settings+ and
+    # rooting it at the given +path+.
+    #
+    # @param [Configliere::Param] settings
+    # @param [String] path
+    def self.boot! settings, path
+      @pre_deploy_settings = settings.dup
+      @settings            = settings
+      @root                = Pathname.new(path)
+      read_common_settings
+      read_environment_settings
+      read_remote_settings
+    end
+
+    # Return the current environment the deploy pack is in.
+    #
+    # @return [String]
     def self.environment
-      Local::Configuration[:environment]
+      settings[:environment]
     end
 
-    def self.root= path
-      @root = Pathname.new(path)
+    # Return the deploy pack's own settings.
+    #
+    # @return [Configliere::Param]
+    def self.settings
+      @settings
     end
-    
+
+    # Return the settings the deploy pack had *before* it booted
+    # itself -- these are used to pass to other tools when invoking
+    # them, since they will read the deploy pack settings themselves
+    # anyway.
+    #
+    # @return [Configliere::Param]
+    def self.pre_deploy_settings
+      @pre_deploy_settings
+    end
+
+    # The root directory of this deploy pack.
+    #
+    # @return [Pathname]
     def self.root
-      @root ||= Pathname.new(File.expand_path("../..", __FILE__))
+      @root
     end
 
+    # The directory this deploy pack keeps local, sample data in.
+    #
+    # @return [Pathname]
     def self.data_dir
       root.join('data')
     end
 
+    # The directory this deploy pack uses for configuration files.
+    #
+    # @return [Pathname]
     def self.config_dir
       root.join('config')
     end
 
+    # The directory this deploy pack uses for temporary files.
+    #
+    # @return [Pathname]
     def self.tmp_dir
       root.join('tmp')
     end
 
+    # The directory this deploy pack uses for logs.
+    #
+    # @return [Pathname]
     def self.log_dir
       root.join('log')
     end
 
+    # The diretory this deploy pack puts all its application code in.
+    #
+    # @return [Pathname]
     def self.app_dir
       root.join('app')
     end
-    
-    def self.boot! path=nil
-      self.root = path if path
-      capture_original_settings
-      load_base_settings
-      load_env_specific_settings
-    end
 
-    def self.capture_original_settings
-      @original_settings = Wukong::Local::Configuration.dup
-    end
-
-    def self.original_settings
-      @original_settings
-    end
-
+    # The logger for this deploy pack.
+    #
+    # @return [Logger]
     def self.logger
       return @logger if @logger
       # FIXME -- want to use the Wukong logger here...
       require 'logger'
       @logger ||= defined?(Log) ? Log : Logger.new
     end
-
+    
     private
 
-    def self.load_base_settings
-      load_settings_from_file(config_dir.join("settings.yml"))
+    # Read settings common across all environments from
+    # config/settings.yml.
+    def self.read_common_settings
+      read_settings_from_file(settings, config_dir.join("settings.yml"))
+    end
+    
+    # Read settings unique to this deploy pack's current environment
+    # from config/ENVIRONMENT.yml.
+    def self.read_environment_settings
+      read_settings_from_file(settings, config_dir.join("environments", "#{environment}.yml"))
     end
 
-    def self.load_env_specific_settings
-      load_settings_from_file(config_dir.join("environments", "#{environment}.yml"))
-    end
-
-    def self.load_settings_from_file path
+    # Update +settings+ with the configuration at the given +path+.
+    #
+    # @param [Configliere::Param] settings
+    # @param [String, Pathname] path
+    def self.read_settings_from_file settings, path
       if File.exist?(path) && File.readable?(path) && File.file?(path)
-        [:Local, :Hadoop, :Elasticsearch].each do |mod|
-          Wukong.const_get(mod).const_get(:Configuration).read(path)
-        end
+        settings.read(path)
       else
-        logger.warn("Cannot read YAML file at #{path}.")
+        logger.warn("Cannot read settings file at #{path}.")
       end
     end
 
-    def self.load_remote_settings
-      # FIXME -- what is the procedure here?
+    # Read remote settings.
+    #
+    # FIXME -- not implemented yet.
+    def self.read_remote_settings
     end
   end
 end
