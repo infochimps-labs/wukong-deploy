@@ -9,7 +9,7 @@ require 'wukong-hadoop/extensions'
 require 'wukong-hadoop/configuration'
 
 # Grab configuration from Wonderdog.
-require 'wonderdog/configuration'
+require 'wonderdog'
 
 module Wukong
   # Provides some helper methods for loading the assets within a

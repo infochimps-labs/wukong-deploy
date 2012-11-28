@@ -15,6 +15,13 @@ module Wukong
       read_remote_settings
     end
 
+    # Return the name of the executable program currently running.
+    #
+    # @return [String]
+    def self.executable
+      File.basename($0)
+    end
+
     # Return the current environment the deploy pack is in.
     #
     # @return [String]
