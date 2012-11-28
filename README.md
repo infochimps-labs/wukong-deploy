@@ -22,10 +22,18 @@ execution contexts including:
 
 The Infochimps Platform uses the concept of a deploy pack for
 developers to develop all their processors, flows, and jobs within.
-It includes the following libraries:
+The deploy pack can be thought of as a container for all the necessary
+Wukong code and plugins useful in the context of an Infochimps
+Platform application.  It includes the following libraries:
 
 * <a href="http://github.com/infochimps-labs/wukong">wukong</a>: The core framework for writing processors and chaining them together.
 * <a href="http://github.com/infochimps-labs/wukong-hadoop">wukong-hadoop</a>: Run Wukong processors as mappers and reducers within the Hadoop framework.  Model Hadoop jobs locally before you run them.
 * <a href="http://github.com/infochimps-labs/wonderdog">wonderdog</a>: Connect Wukong processors running within Hadoop to Elasticsearch as either a source or sink for data.
 
-## 
+## Installation
+
+The deploy pack is installed as a RubyGem:
+
+```
+$ sudo gem install wukong-deploy
+```
