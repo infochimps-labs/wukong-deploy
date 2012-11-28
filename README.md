@@ -40,7 +40,7 @@ $ sudo gem install wukong-deploy
 
 ## File Structure
 
-A deploy pack is essentially a repository with the following
+A deploy pack is a repository with the following
 [Rails](http://rubyonrails.org/)-like file structure:
 
 ```
