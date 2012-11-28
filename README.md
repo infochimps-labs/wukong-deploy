@@ -37,3 +37,58 @@ The deploy pack is installed as a RubyGem:
 ```
 $ sudo gem install wukong-deploy
 ```
+
+## File Structure
+
+A deploy pack is essentially a repository with the following
+[Rails](http://rubyonrails.org/)-like file structure:
+
+```
+├──   app
+│   ├──   models
+│   ├──   processors
+│   ├──   flows
+│   └──   jobs
+├──   config
+│   ├──   environment.rb
+│   ├──   application.rb
+│   ├──   initializers
+│   ├──   settings.yml
+│   └──   environments
+│       ├──   development.yml
+│       ├──   production.yml
+│       └──   test.yml
+├──   data
+├──   Gemfile
+├──   Gemfile.lock
+├──   lib
+├──   log
+├──   Rakefile
+├──   spec
+│   ├──   spec_helper.rb
+│   └──   support
+└──   tmp
+```
+
+Let's look at it piece by piece:
+
+* <tt>app</tt>: The directory with all the action.  It's where you define:
+  * <tt>models</tt>: Your domain models or "nouns", which define and wrap the different kinds of data elements in your application.  They are built using whatever framework you like (defaults to [Gorillib](http://github.com/infochimps-labs/gorillib)
+  * <tt>processors</tt>: Your fundamental operations or "verbs", which are passed records and parse, filter, augment, normalize, or split them.
+  * <tt>flows</tt>: Chain together processors into streaming flows for ingestion, real-time processing, or [complex event processing](http://en.wikipedia.org/wiki/Complex_event_processing) (CEP)
+  * <tt>jobs</tt>: Pair processors together to create batch jobs to run in Hadoop
+* <tt>config</tt>: Where you place all application configuration for all environments
+  * <tt>environment.rb</tt>: Defines the runtime environment for all code, requiring and configuring all Wukong framework code.  You shouldn't have to edit this file directly.
+  * <tt>application.rb</tt>: Require and configure libraries specific to your application.  Choose a model framework, pick what application code gets loaded by default (vs. auto-loaded).
+  * <tt>initializers</tt>: Holds any files you need to load before <tt>application.rb</tt> here.  Useful for requiring and configuring external libraries.
+  * <tt>settings.yml</tt>: Defines application-wide settings.
+  * <tt>environments</tt>: Defines environment-specific settings in YAML files named after the environment.  Overrides <tt>config/settings.yml</tt>.
+* <tt>data</tt>: Holds sample data in flat files.  You'll develop and test your application using this data.
+* <tt>Gemfile</tt> and <tt>Gemfile.lock</tt>: Defines how libraries are resolved with [Bundler](http://gembundler.com/).
+* <tt>lib</tt>: Holds any code you want to use in your application but that isn't "part of" your application (like vendored libraries, Rake tasks, &c.).
+* <tt>log</tt>: A good place to stash logs.
+* <tt>Rakefile</tt>: Defines [Rake](http://rake.rubyforge.org/) tasks for the development, test, and deploy of your application.
+* <tt>spec</tt>: Holds all your [RSpec](http://rspec.info/) unit tests.
+  * <tt>spec_helper.rb</tt>: Loads libraries you'll use during testing, includes spec helper libraries from Wukong.
+  * <tt>support</tt>: Holds support code for your tests.
+* <tt>tmp</tt>: A good place to stash temporary files.
