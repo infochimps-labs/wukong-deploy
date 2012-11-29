@@ -4,10 +4,4 @@ require 'wukong-deploy'
 settings = Wukong::Deploy::Configuration
 require 'wukong/boot'
 Wukong.boot!(settings)
-
-if settings.rest.empty?
-  settings.dump_help
-  exit(1)
-end
-
 Wukong::Deploy::Driver.run(settings, *settings.rest)

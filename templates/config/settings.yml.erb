@@ -1,0 +1,54 @@
+---
+
+# = config/settings.yml
+#
+# Any settings defined in this file will be merged into a global
+# Settings object within any of the wu-tools which run inside this
+# deploy pack.
+#
+# Settings will additionally be loaded from a file named after the
+# ICS_PLATFORM_ENV environment variable and will override those
+# declared here. The 'development' environment is the default
+# environment loaded.
+#
+# Any settings specified on the command line when invoking wu-tools
+# will take precedence over settings within any of these files.
+#
+
+
+#
+# == Notifier
+#
+# Notifiers are used within a Processor for out of band event
+# processing.
+notifier:
+
+  # The type of notifier to use is better set on a per-environment
+  # basis.  See the correspdoning YAML files in config/environments.
+  # type: log
+
+  #
+  # === Log notifier
+  #
+  # The log notifier will print each event to the log.
+
+  # A path to a log file.
+  # log: log/wu.log
+
+  # The priority level of the log
+  # level: info
+
+  #
+  # === HTTP notifier
+  #
+  # The HTTP notifier will send events over HTTP to an instance of the
+  # Infochimps Platform API
+
+  # The host to send each event to.  Your host is typically determined
+  # by the name of your platform account.
+  # host: api.INSERT_ACCOUNT_NAME_HERE.chimpy.us
+
+  # The port to send each event to.
+  # port: 9000
+
+# You can put processor-specfic settings within this file as well.

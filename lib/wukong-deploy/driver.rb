@@ -17,6 +17,14 @@ module Wukong
       end
 
       def run!
+        case args.first
+        when 'new'
+          raise Error.new("Must provide a path to the root of the deploy pack you want to create") if args[1].nil? || args[1].blank?
+          Templater.new(File.expand_path(args[1], Dir.pwd)).create
+        else
+          settings.dump_help
+          exit(2)
+        end
       end
 
       def initialize settings, *args
