@@ -23,3 +23,4 @@ end
 # Now load the rest of the deploy pack.
 require 'wukong-deploy/deploy_pack'
 require 'wukong-deploy/configuration'
+require 'wukong-deploy/driver'

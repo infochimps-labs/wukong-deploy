@@ -12,8 +12,11 @@ module Wukong
       when 'wu-hadoop'
         Wukong::Elasticsearch.configure(settings) if executable == 'wu-hadoop'
       end
+      settings
     end
-    
+
+    # All configuration for Wukong::Deploy lives in this object.
+    Configuration = configure(Configliere::Param.new) unless defined?(Configuration)
   end
 
 end

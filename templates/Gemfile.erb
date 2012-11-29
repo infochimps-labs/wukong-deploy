@@ -1,0 +1,38 @@
+# Use the public [RubyGems server](http://rubygems.org/)
+source                 :rubygems
+
+# The following dependencies are for your application.
+#
+# Does one of your processors require the UserAgent library because
+# it's parsing HTTP User-Agent strings? Just insert
+#
+#   gem 'useragent'
+#
+# here and then remember to run
+#
+#   $ bundle install --standalone
+#
+# Here's a link to the [Bundler documentation](http://gembundler.com/)
+# for your convenience.
+
+
+
+
+
+
+#
+# = Framework
+#
+# The following libraries are part of the deploy pack framework.  You
+# shouldn't need to change these.
+#
+
+gem 'wukong-deploy',          :git => 'https://github.com/infochimps-labs/wukong-deploy'
+gem 'wukong',                 :git => 'https://github.com/infochimps-labs/wukong', :branch => '3.0.0'
+gem 'wukong-hadoop',          :git => 'https://github.com/infochimps-labs/wukong-hadoop'
+gem 'wonderdog',              :git => 'https://github.com/infochimps-labs/wonderdog'
+gem 'vayacondios-client',     :git => 'https://github.com/infochimps-labs/vayacondios'
+
+group :development do
+  gem 'rspec'
+end
