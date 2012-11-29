@@ -40,8 +40,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency('wonderdog')
   gem.add_dependency('erubis')
   gem.add_dependency('vayacondios-client')
-
-  gem.add_development_dependency 'rake',     '~> 0.9'
+  gem.add_dependency('rake',     '~> 0.9')
   gem.add_development_dependency 'rspec',    '~> 2'
   
 end

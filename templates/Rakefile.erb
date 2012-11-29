@@ -1,0 +1,43 @@
+require_relative 'config/environment'
+require 'wukong-deploy/tasks'
+
+Dir[File.join(File.dirname(__FILE__), "lib/tasks/**/*.rb")].each { |path| require(path) }
+
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new(:rspec)
+
+dependency_space :dependency do
+
+  task :gems do
+    BuildHelper.install_gem_dependency('multi_json', '1.0.4')
+    BuildHelper.install_gem_dependency 'simple_classifier'
+  end
+
+end
+
+dependency_space :configure => :dependency do
+  
+  task :flume_conf do
+    ext_dirs = BuildHelper.parse_property_file
+    ext_dirs.unshift(BuildHelper.path_to(:ruby_root).to_s).uniq!
+    BuildHelper.write_property_file(ext_dirs)
+  end
+  
+end
+
+dependency_space :deploy => :configure do
+
+  task :gem_jar do
+    jar_name = 'gem-dependencies.jar'
+    gem_path = BuildHelper.path_to(:vendor).join('gem')
+    sh "jar cf #{BuildHelper.path_to(:vendor).join(jar_name)} -C #{gem_path} ." if gem_path.exist?
+    src      = BuildHelper.path_to(:vendor).join(jar_name)
+    dest     = BuildHelper.path_to(:flume_lib).join(jar_name)
+    FileUtils.cp(src, dest) if src.exist?    
+  end
+  
+  task(:maven){ sh "mvn package -Dflume.libdir=#{BuildHelper.path_to(:flume_lib)} clean" }
+   
+end
+
+task :default => :rspec

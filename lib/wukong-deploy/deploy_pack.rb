@@ -15,6 +15,24 @@ module Wukong
       read_remote_settings
     end
 
+    # Return the root directory of this deploy pack.
+    #
+    # @return [Pathname]
+    def self.root
+      @root
+    end
+
+    # Recursively require each Ruby file +dir+.
+    #
+    # @example Requiring all .rb files anywhere within /lib/my_lib
+    #
+    #   Wukong::Deploy.require_recursive("lib/my_lib")
+    #
+    # @param [String] glob
+    def self.require_recursive glob
+      Dir[root.join("#{glob}/**/*.rb")].each { |path| require(path) }
+    end
+    
     # Return the name of the executable program currently running.
     #
     # @return [String]
