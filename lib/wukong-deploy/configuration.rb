@@ -5,6 +5,7 @@ module Wukong
     # settings *before* they are resolved.
     #
     # @param [Configliere::Param] settings
+    # @return [Configliere::Param] the newly configured settings
     def self.configure settings
       settings.define(:environment, :description => "The environment to run in", :default => 'development', :flag => 'e', :env_var => 'ICS_PLATFORM_ENV')
       
@@ -12,7 +13,12 @@ module Wukong
       when 'wu-hadoop'
         Wukong::Elasticsearch.configure(settings) if executable == 'wu-hadoop'
       end
+
+      settings
     end
+
+    # All settings for Wukong::Deploy live in this object.
+    Configuration = configure(Configliere::Param.new) unless defined?(Configuration)
     
   end
 
