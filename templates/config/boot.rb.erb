@@ -1,0 +1,21 @@
+# = config/boot.rb
+#
+# Loads the Ruby language framework and activates Bundler.
+#
+# We use a standalone bundle installation becaues it makes it easier
+# to have non-Ruby code in underlying frameworks interact with the
+# deploy pack.
+#
+# Make sure you install the bundle locally with the following command:
+#
+# @example Install a standalone bundle of gems
+#
+#   $ bundle install --standalone
+
+setup_path = File.expand_path("../../bundle/bundler/setup.rb", __FILE__)
+begin
+  require setup_path
+rescue LoadError => e
+  $stderr.puts("Failed to require \"#{setup_path}\".  Try running\n\n  bundle install --standalone\n\n")
+  exit(1)
+end
