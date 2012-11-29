@@ -5,6 +5,7 @@ module Wukong
     # settings *before* they are resolved.
     #
     # @param [Configliere::Param] settings
+    # @return [Configliere::Param] the newly configured settings
     def self.configure settings
       settings.define(:environment, :description => "The environment to run in", :default => 'development', :flag => 'e', :env_var => 'ICS_PLATFORM_ENV')
       
