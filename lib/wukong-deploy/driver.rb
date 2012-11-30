@@ -1,4 +1,4 @@
-require_relative('templater')
+
 
 module Wukong
   module Deploy
@@ -19,8 +19,12 @@ module Wukong
       def run!
         case args.first
         when 'new'
+          require_relative('templater')
           raise Error.new("Must provide a path to the root of the deploy pack you want to create") if args[1].nil? || args[1].blank?
           Templater.new(File.expand_path(args[1], Dir.pwd)).create
+        when 'console'
+          require_relative('console')
+          Wukong::Deploy::Console.new.run!
         else
           settings.dump_help
           exit(2)
