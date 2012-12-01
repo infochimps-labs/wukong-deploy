@@ -35,11 +35,11 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(/^spec/)
   gem.require_paths = ['lib']
 
-  # gem.add_dependency('wukong',        '~> 3')
-  gem.add_dependency('wukong-hadoop')
+  gem.add_dependency('wukong', '3.0.0.pre2')
+  gem.add_dependency('wukong-hadoop')w
   gem.add_dependency('wonderdog')
   gem.add_dependency('erubis')
-  gem.add_dependency('vayacondios-client')
+  
   gem.add_dependency('rake',     '~> 0.9')
   gem.add_development_dependency 'rspec',    '~> 2'
   
