@@ -38,6 +38,29 @@ The deploy pack is installed as a RubyGem:
 $ sudo gem install wukong-deploy
 ```
 
+## Usage
+
+Wukong-Deploy provides a command-line tool `wu-deploy` which can be
+used to create or interact with deploy packs.
+
+### Creating a New Deploy Pack
+
+Create a new deploy pack:
+
+```
+$ wu-deploy new my_app
+```
+
+This will create a directory `my_app` in the current directory.  There
+are some options you can access with
+
+```
+$ wu-deploy --help
+```
+
+* 
+
+
 ## File Structure
 
 A deploy pack is a repository with the following

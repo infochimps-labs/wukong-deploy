@@ -1,5 +1,3 @@
-
-
 module Wukong
   module Deploy
     class Driver
@@ -21,7 +19,7 @@ module Wukong
         when 'new'
           require_relative('templater')
           raise Error.new("Must provide a path to the root of the deploy pack you want to create") if args[1].nil? || args[1].blank?
-          Templater.new(File.expand_path(args[1], Dir.pwd)).create
+          Templater.new(File.expand_path(args[1], Dir.pwd), settings).run!
         when 'console'
           require_relative('console')
           Wukong::Deploy::Console.new.run!

@@ -3,6 +3,8 @@ require 'fileutils'
 require 'erubis'
 
 require_relative('repo')
+require_relative('templater/messaging')
+require_relative('templater/conflict_resolution')
 
 module Wukong
   module Deploy
@@ -11,22 +13,30 @@ module Wukong
       attr_accessor :repo
       attr_accessor :options
 
-      include FileUtils::Verbose
+      include FileUtils
+      include Messaging
+      include ConflictResolution
 
       def initialize root, options={}
         self.repo    = Repo.new(root)
         self.options = options
       end
 
-      def create
+      def dry_run?
+        @options[:dry_run]
+      end
+
+      def run!
         create_dirs
         create_templates
         create_gitkeeps
         create_gitignore
       end
-
+      
       def create_dirs
-        repo.dirs_to_create.each { |dir| mkdir_p(dir) }
+        repo.dirs_to_create.each do |dir|
+          create_directory(dir)
+        end
       end
 
       def create_templates
@@ -36,18 +46,16 @@ module Wukong
       end
 
       def create_template input_path, output_path, binding={}
-        input  = File.read(input_path)
-        erb    = Erubis::Eruby.new(input)
-        output = erb.result(binding)
-        action = File.exist?(output_path) ? 'modify' : 'create'
-        puts "#{action} #{output_path}"
-        File.open(output_path, 'w') { |f| f.puts(output) }
+        input   = File.read(input_path)
+        erb     = Erubis::Eruby.new(input)
+        content = erb.result(binding)
+        create_file(content, output_path)
       end
       
       def create_gitkeeps
         repo.dirs_to_create.each do |dir|
           if Dir[File.join(dir, '*')].empty?
-            touch(File.join(dir, '.gitkeep'))
+            create_file(empty_file, File.join(dir, '.gitkeep'))
           end
         end
       end
@@ -59,7 +67,33 @@ module Wukong
       def templates_dir
         @templates_dir ||= Pathname.new(File.expand_path('../../../templates', __FILE__))
       end
+
+      private
+
+      def empty_file
+        ""
+      end
       
+      def create_file content, path
+        if File.exist?(path)
+          handle_conflict(content, path)
+        else
+          message_create(path)
+          write_file(content, path)
+        end
+      end
+
+      def create_directory(dir)
+        message_create(dir)
+        return if dry_run?
+        mkdir_p(dir)
+      end
+
+      def write_file content, path
+        return if dry_run?
+        File.open(path, 'w') { |f| f.write(content) }
+      end
+
     end
   end
 end
