@@ -3,7 +3,7 @@ module Wukong
     module Messaging
       
       def message action, *objects
-        puts [action.rjust(25), '  ', objects.map(&:to_s).join(' ')].join
+        puts [action.rjust(25), '  ', objects.map { |path| Pathname.new(path).relative_path_from(repo.root).to_s }.join(' ')].join
       end
 
       def message_create *objects

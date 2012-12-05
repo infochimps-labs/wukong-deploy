@@ -49,16 +49,40 @@ Create a new deploy pack:
 
 ```
 $ wu-deploy new my_app
+Within /home/user/my_app:
+      create  .
+      create  app/models
+      create  app/processors
+	  ...
 ```
 
-This will create a directory `my_app` in the current directory.  There
-are some options you can access with
+This will create a directory `my_app` in the current directory.
+Passing the `dry_run` option will print what should happen without
+actually doing anything:
 
 ```
-$ wu-deploy --help
+$ wu-deploy new my_app --dry_run
+Within /home/user/my_app:
+      create  .
+      create  app/models
+      create  app/processors
+	  ...
 ```
 
-* 
+You'll be prompted if there is a conflict.  You can pass the `force`
+option to always overwrite files and the `skip` option to never
+overwrite files.
+
+### Working with an Existing Deploy Pack
+
+If your current directory is within an existing deploy pack you can
+start up an IRB console with the deploy pack's environment already
+loaded:
+
+```
+$ wu-deploy console
+irb(main):001:0> 
+```
 
 
 ## File Structure

@@ -27,6 +27,11 @@ module Wukong
       end
 
       def run!
+        if dry_run?
+          puts "Would perform the following actions in #{repo.root}"
+        else
+          puts "Within #{repo.root}:"
+        end
         create_dirs
         create_templates
         create_gitkeeps
