@@ -1,4 +1,4 @@
-# Welcome to the Infochimps Platform!
+f# Welcome to the Infochimps Platform!
 
 The [Infochimps Platform](http://www.infochimps.com) is an end-to-end,
 managed solution for building Big Data applications.  It integrates
@@ -107,6 +107,48 @@ the ability to be configured.
 Put any configuration you want shared across all environments into the
 file `config/settings.yml`.  Override this with environment-specific
 configuration in the appropriate file within `config/environments`.
+
+As an example, you may write a processor like this:
+
+```ruby
+Wukong.procesor(:configurable_decorator) do
+  field :suffix, String, :default => '.'
+  def process record
+    yield [record, suffix].join
+  end
+end
+```
+
+This processor's `suffix` property can be set on the command-line:
+
+```
+$ cat input
+1
+2
+3
+$ cat input | wu-local configurable_decorator
+1.
+2.
+3.
+$ cat input | wu-local configurable_decorator --suffix=','
+1,
+2,
+3,
+
+You can also set the same property in a configuration file, scoped by
+the name of the processor:
+
+```yaml
+# in config/settings.yml
+---
+
+configurable_decorator:
+  suffix: ,
+```
+
+which lets you the `--suffix` flag on the command-line while still
+overriding the default setting.  You can also put such settings in
+environment specific files within `config/environments`.
 
 ## File Structure
 
