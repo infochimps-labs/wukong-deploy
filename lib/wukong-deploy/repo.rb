@@ -1,11 +1,20 @@
 module Wukong
   module Deploy
+
+    # A class to represent a deploy pack repository as a collection of
+    # files on disk.
     class Repo
 
+      # The names of the top level directories in the deploy pack.
       TOP_LEVEL_DIR_NAMES = %w[app config data lib log script spec tmp]
-      
+
+      # The root directory where this deploy pack repo is or will be
+      # located.
       attr_reader :root
 
+      # Initialize a new deploy pack repo at the given `root`.
+      #
+      # @param [String] root
       def initialize root
         @root = Pathname.new(root)
       end
@@ -16,6 +25,9 @@ module Wukong
         end
       end
 
+      # The directories to create within this repo.
+      #
+      # @return [Array<String>]
       def dirs_to_create
         [
          root,
@@ -42,6 +54,10 @@ module Wukong
         ]
       end
 
+      # The files to template within this repo, relative to the repo's
+      # #root.
+      #
+      # @return [Array<String>]
       def files_to_template
         %w[
          config/boot.rb

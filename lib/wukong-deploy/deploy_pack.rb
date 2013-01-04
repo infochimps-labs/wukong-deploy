@@ -1,27 +1,13 @@
 module Wukong
   module Deploy
-
-    # Boot the deploy pack, reading all available +settings+ and
-    # rooting it at the given +path+.
-    #
-    # @param [Configliere::Param] settings
-    # @param [String] path
-    def self.boot! settings, path
-      @pre_deploy_settings = settings.dup
-      @settings            = settings
-      @root                = Pathname.new(path)
-      read_common_settings
-      read_environment_settings
-      read_remote_settings
-    end
-
+    
     # Return the root directory of this deploy pack.
     #
     # @return [Pathname]
     def self.root
       @root
     end
-
+    
     # Recursively require each Ruby file +dir+.
     #
     # @example Requiring all .rb files anywhere within /lib/my_lib
@@ -31,13 +17,6 @@ module Wukong
     # @param [String] glob
     def self.require_recursive glob
       Dir[root.join("#{glob}/**/*.rb")].each { |path| require(path) }
-    end
-    
-    # Return the name of the executable program currently running.
-    #
-    # @return [String]
-    def self.executable
-      File.basename($0)
     end
 
     # Return the current environment the deploy pack is in.
@@ -105,16 +84,6 @@ module Wukong
     def self.app_dir
       root.join('app')
     end
-
-    # The logger for this deploy pack.
-    #
-    # @return [Logger]
-    def self.logger
-      return @logger if @logger
-      # FIXME -- want to use the Wukong logger here...
-      require 'logger'
-      @logger ||= defined?(Log) ? Log : Logger.new
-    end
     
     private
 
@@ -137,8 +106,6 @@ module Wukong
     def self.read_settings_from_file settings, path
       if File.exist?(path) && File.readable?(path) && File.file?(path)
         settings.read(path)
-      else
-        logger.warn("Cannot read settings file at #{path}.")
       end
     end
 

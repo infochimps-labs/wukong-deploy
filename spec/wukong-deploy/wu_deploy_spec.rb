@@ -9,7 +9,7 @@ describe 'wu-deploy' do
     subject { command('wu-deploy') }
     it { should exit_with(:non_zero) }
     it "displays a help message" do
-      should have_stderr(/usage: wu-deploy/)
+      should have_stderr(/invalid action/i)
     end
   end
 

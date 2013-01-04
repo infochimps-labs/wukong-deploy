@@ -36,9 +36,6 @@ Gem::Specification.new do |gem|
   gem.require_paths = ['lib']
 
   gem.add_dependency('wukong',        '3.0.0.pre3')
-  gem.add_dependency('wukong-hadoop', '>= 0.0.2')
-  gem.add_dependency('wonderdog',     '>= 0.0.2')
-  gem.add_dependency('wukong-load'    '>= 0.0.2')
   gem.add_dependency('erubis')
   gem.add_dependency('diffy')
   gem.add_dependency('rake',     '~> 0.9')

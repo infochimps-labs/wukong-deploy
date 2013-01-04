@@ -1,7 +1,4 @@
 #!/usr/bin/env ruby
 
 require 'wukong-deploy'
-settings = Wukong::Deploy::Configuration
-require 'wukong/boot'
-Wukong.boot!(settings)
-Wukong::Deploy::Driver.run(settings, *settings.rest)
+Wukong::Deploy::DeployRunner.run
