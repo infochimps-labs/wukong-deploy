@@ -11,7 +11,8 @@ require 'wukong-hadoop/extensions'
 require 'wonderdog'
 
 require_relative 'wukong-deploy/deploy_pack'
-require_relative 'wukong-deploy/runner'
+require_relative 'wukong-deploy/deploy_runner'
+require_relative 'wukong-deploy/rake_runner'
 
 module Wukong
   # Provides some helper methods for loading the assets within a

@@ -106,6 +106,8 @@ module Wukong
     def self.read_settings_from_file settings, path
       if File.exist?(path) && File.readable?(path) && File.file?(path)
         settings.read(path)
+      else
+        Wukong::Log.warn("Could not read settings from path: #{path}")
       end
     end
 
