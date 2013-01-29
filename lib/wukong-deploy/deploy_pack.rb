@@ -88,26 +88,54 @@ module Wukong
     private
 
     # Read settings common across all environments from
-    # config/settings.yml.
+    # `config/settings.yml`.
+    #
+    # Will also read any YAML files in the `config/settings` directory
+    # -- order is *not* guaranteed.
     def self.read_common_settings
       read_settings_from_file(settings, config_dir.join("settings.yml"))
+      if File.directory?(config_dir.join('settings'))
+        Dir[config_dir.join('settings','*.yml')].each do |path|
+          read_settings_from_file(settings, path)
+        end
+      end
     end
     
     # Read settings unique to this deploy pack's current environment
-    # from config/ENVIRONMENT.yml.
+    # from config/environments/ENVIRONMENT.yml.
+    #
+    # Will also read any YAML files in the
+    # `config/environments/ENVIRONMENT` directory -- order is *not*
+    # guaranteed.
     def self.read_environment_settings
       read_settings_from_file(settings, config_dir.join("environments", "#{environment}.yml"))
+      if File.directory?(config_dir.join('environments', environment))
+        Dir[config_dir.join('environments', environment, '*.yml')].each do |path|
+          read_settings_from_file(settings, path)
+        end
+      end
+    end
+
+    # Read settings created by a deployment tool from
+    # `config/deploy.yml` and
+    # `config/environments/deploy-ENVIRONMENT.yml.
+    def self.read_deploy_settings
+      # pass 'false' here so we don't log an annoying warning message
+      # when not in a deployed environment.
+      read_settings_from_file(settings, config_dir.join("deploy.yml"),                                false)
+      read_settings_from_file(settings, config_dir.join("environments", "deploy-#{environment}.yml"), false)
     end
 
     # Update +settings+ with the configuration at the given +path+.
     #
     # @param [Configliere::Param] settings
     # @param [String, Pathname] path
-    def self.read_settings_from_file settings, path
+    # @param [true, false] warn whether to log a warning message if no config file is found
+    def self.read_settings_from_file settings, path, warn=true
       if File.exist?(path) && File.readable?(path) && File.file?(path)
         settings.read(path)
       else
-        Wukong::Log.warn("Could not read settings from path: #{path}")
+        Wukong::Log.warn("Could not read settings from path: #{path}") if warn
       end
     end
 

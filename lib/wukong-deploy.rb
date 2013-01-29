@@ -49,7 +49,8 @@ module Wukong
       @root                = Pathname.new(path)
       read_common_settings
       read_environment_settings
-      read_remote_settings
+      read_deploy_settings
+      read_remote_settings 
     end
 
   end
