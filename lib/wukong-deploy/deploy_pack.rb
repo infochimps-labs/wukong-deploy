@@ -15,8 +15,8 @@ module Wukong
     #   Wukong::Deploy.require_recursive("lib/my_lib")
     #
     # @param [String] glob
-    def self.require_recursive glob
-      Dir[root.join("#{glob}/**/*.rb")].each { |path| require(path) }
+    def self.require_recursive glob, ext='.rb'
+      Dir[root.join("#{glob}/**/*#{ext}")].each { |path| require(path) }
     end
 
     # Return the current environment the deploy pack is in.
