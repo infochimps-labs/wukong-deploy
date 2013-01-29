@@ -33,6 +33,14 @@ module Wukong
       @settings
     end
 
+    # Has this deploy pack been completely booted, all settings read,
+    # &c.
+    #
+    # @return [true, false]
+    def self.booted?
+      @booted
+    end
+
     # Return the settings the deploy pack had *before* it booted
     # itself -- these are used to pass to other tools when invoking
     # them, since they will read the deploy pack settings themselves
