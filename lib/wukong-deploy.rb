@@ -2,14 +2,6 @@
 # build-in widgets.
 require 'wukong'
 
-# Require just enough of wukong-hadoop to give us changes at the
-# processor level.  The rest is only required when running the
-# 'wu-hadoop' program.  Also grab configuration since we'll need it.
-require 'wukong-hadoop/extensions'
-
-# Grab configuration from Wonderdog.
-require 'wonderdog'
-
 require_relative 'wukong-deploy/deploy_pack'
 require_relative 'wukong-deploy/deploy_runner'
 require_relative 'wukong-deploy/rake_runner'
@@ -34,6 +26,7 @@ module Wukong
         settings.define(:skip,    :description => "Skip existing files", :type => :boolean, :default => false)
         settings.define(:force,   :description => "Overwrite existing files", :type => :boolean, :default => false)
       when 'wu-hadoop'
+        require_relative('wukong-deploy/extensions')
         settings[:command_prefix] = 'bundle exec'
       end
     end
@@ -44,6 +37,15 @@ module Wukong
     # @param [Configliere::Param] settings
     # @param [String] path
     def self.boot settings, path
+# # Require just enough of wukong-hadoop to give us changes at the
+# # processor level.  The rest is only required when running the
+# # 'wu-hadoop' program.  Also grab configuration since we'll need it.
+# require 'wukong-hadoop/extensions'
+
+# # Grab configuration from Wonderdog.
+# require 'wonderdog'
+
+      
       @pre_deploy_settings = settings.dup
       @settings            = settings
       @root                = Pathname.new(path)
@@ -56,5 +58,3 @@ module Wukong
 
   end
 end
-
-require_relative 'wukong-deploy/extensions'
