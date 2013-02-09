@@ -2,9 +2,10 @@
 #
 # Loads the Ruby language framework and activates Bundler.
 #
-# We use a standalone bundle installation becaues it makes it easier
-# to have non-Ruby code in underlying frameworks interact with the
-# deploy pack.
+# We can use a system-wide bundle installation _or_ a standalone
+# bundle installation.  If a standalone installation exists (at
+# /bundle/bundler/setup.rb), we will detect and use it.  Otherwise, we
+# fall back on the system-wide bundle installation.
 #
 # Make sure you install the bundle locally with the following command:
 #
@@ -12,10 +13,14 @@
 #
 #   $ bundle install --standalone
 
-setup_path = File.expand_path("../../bundle/bundler/setup.rb", __FILE__)
-begin
-  require setup_path
-rescue LoadError => e
-  $stderr.puts("Failed to require \"#{setup_path}\".  Try running\n\n  bundle install --standalone\n\n")
-  exit(1)
+local_setup_path = File.expand_path("../../bundle/bundler/setup.rb", __FILE__)
+if File.exist?(local_setup_path)
+  begin
+    require local_setup_path
+  rescue LoadError => e
+    $stderr.puts("Local Bundle installation at #{local_setup_path} is corrupted.  Try running\n\n  rm -rf bundle .bundle\n  bundle install --standalone\n\n")
+    exit(1)
+  end
+else
+  require 'bundler/setup'
 end

@@ -86,17 +86,11 @@ From within the root of your deploy pack run the following commands
 
 ```
 $ sudo gem install bundler
-$ bundle install --standalone
+$ bundle install
 ```
 
 If you're using [rbenv](https://github.com/sstephenson/rbenv) you may
-want to run `rbenv exec bundle install --standalone`.
-
-Bundler will install all the necessary dependencies locally in a
-directory called `bundle`.  We use a `standalone` installation of your
-application bundle because this makes it easier to connect code in the
-deploy pack to frameworks like Hadoop, Storm, &c. when your code is
-running within the Infochimps Platform.
+want to run `rbenv exec bundle install`.
 
 ### Configuration
 
