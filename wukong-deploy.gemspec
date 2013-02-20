@@ -35,7 +35,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(/^spec/)
   gem.require_paths = ['lib']
 
-  gem.add_dependency('wukong',        '3.0.0.pre3')
+  gem.add_dependency('wukong',        '3.0.0')
   gem.add_dependency('rake',          '~> 0.9')
   gem.add_dependency('erubis')
   gem.add_dependency('diffy')
