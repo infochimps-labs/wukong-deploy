@@ -1,10 +1,11 @@
-#!/bin/bash
-now=`date '+%Y-%m-%d %H:%M:%S'`
-if [ -z "$1" ]; then
-    echo "ERROR ${now} [wu                  ] -- Must provide a Wukong command to run. Try the --help option." 1>&2
+#!/usr/bin/env ruby
+require 'shellwords'
+now=Time.now.strftime("%Y-%m-%d %H:%M:%S")
+if ARGV.empty?
+    $stderr.puts "ERROR #{now} [wu                  ] -- Must provide a Wukong command to run. Try the --help option."
 else
-    if [[ "$#" == 1 && "$1" == --help ]]; then
-	cat 1>&2 <<EOF
+    if ARGV.size == 1 && ARGV.first == '--help'
+	$stderr.puts <<EOF
 usage: wu COMMAND [OPTIONS] [ARG] ...
 
 wu is a wrapper for easy use of Wukong's command-line tools.  It takes
@@ -25,10 +26,10 @@ You can run any of the wu-tools like
 
 EOF
     else
-	if [[ "$1" == -* ]]; then
-	    echo "ERROR ${now} [wu                  ] -- First argument must be the name of a wu tool to run, got <${1}>" 1>&2
-	else
-	    exec bundle exec wu-"$@"
-	fi
-    fi
-fi
+      if ARGV.first =~ /^-/
+        $stderr.puts "ERROR ${now} [wu                  ] -- First argument must be the name of a wu tool to run, got <${1}>"
+      else
+        Kernel.exec "bundle exec wu-#{Shellwords.join(ARGV)}"
+      end
+    end
+end
