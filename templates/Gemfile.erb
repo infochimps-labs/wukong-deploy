@@ -29,21 +29,24 @@ source                 :rubygems
 # Provides
 #
 #   - wu-local
-gem 'wukong',                 :git => 'https://github.com/infochimps-labs/wukong', :branch => '3.0.0'
+gem 'wukong',                 '3.0.0'
 
 # Model Hadoop jobs locally and run them on a cluster.
 # 
 # Provides
 #
 #   - wu-hadoop
-gem 'wukong-hadoop',          :git => 'https://github.com/infochimps-labs/wukong-hadoop'
+gem 'wukong-hadoop',          '0.1.0'
+
+# Lets Hadoop streaming work with Elasticsearch.
+gem 'wonderdog',              '0.1.0'
 
 # Provides an interface into Wukong dataflows accessible from Storm.
 #
 # Provides
 #
 #   - wu-storm
-gem 'wukong-storm',           :git => 'https://github.com/infochimps-labs/wukong-storm'
+gem 'wukong-storm',           '0.1.0'
 
 # Lets you load JSON blobs into data stores.
 #
@@ -51,19 +54,14 @@ gem 'wukong-storm',           :git => 'https://github.com/infochimps-labs/wukong
 #
 #   - wu-load
 #   - wu-source
-gem 'wukong-load',            :git => 'https://github.com/infochimps-labs/wukong-load'
-
-# Lets Hadoop streaming work with Elasticsearch.
-gem 'wonderdog',              :git => 'https://github.com/infochimps-labs/wonderdog'
+gem 'wukong-load',            '0.1.0'
 
 # Framework for gluing code together.
 #
 # Provides
 #
 #   - wu-deploy
-gem 'wukong-deploy',          :git => 'https://github.com/infochimps-labs/wukong-deploy'
-
-gem 'vayacondios-client',     :git => 'https://github.com/infochimps-labs/vayacondios'
+gem 'wukong-deploy',          '0.1.0'
 
 group :development do
   gem 'yard'
