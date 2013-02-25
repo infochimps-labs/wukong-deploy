@@ -11,7 +11,7 @@ best-of-breed technologies like [Hadoop](http://hadoop.apache.org/),
 for accessing these powerful tools.
 
 Computation, analytics, scripting, &c. are all handled by
-[Wukong](http://github.com/infochimps-labs/wukong) within the
+[Wukong](http://github.com/infochimps-labs/wukong/tree/3.0.0) within the
 platform.  Wukong is an abstract framework for defining computations
 on data.  Wukong processors and flows can run in many different
 execution contexts including:
@@ -26,8 +26,9 @@ The deploy pack can be thought of as a container for all the necessary
 Wukong code and plugins useful in the context of an Infochimps
 Platform application.  It includes the following libraries:
 
-* <a href="http://github.com/infochimps-labs/wukong">wukong</a>: The core framework for writing processors and chaining them together.
 * <a href="http://github.com/infochimps-labs/wukong-hadoop">wukong-hadoop</a>: Run Wukong processors as mappers and reducers within the Hadoop framework.  Model Hadoop jobs locally before you run them.
+* <a href="http://github.com/infochimps-labs/wukong-storm">wukong-storm</a>: Run Wukong processors within the Storm framework.  Model flows locally before you run them.
+* <a href="http://github.com/infochimps-labs/wukong-load">wukong-load</a>: Load the output data from your local Wukong jobs and flows into a variety of different data stores.
 * <a href="http://github.com/infochimps-labs/wonderdog">wonderdog</a>: Connect Wukong processors running within Hadoop to Elasticsearch as either a source or sink for data.
 
 ## Installation
