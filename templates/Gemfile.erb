@@ -56,6 +56,21 @@ gem 'wukong-storm',           '0.1.0'
 #   - wu-source
 gem 'wukong-load',            '0.1.0'
 
+# If you want to use wu-load, you'll likely have to enable the various
+# gems required for the database(s) you're interested in here.
+group :load do
+  # MongoDB
+  # gem 'mongo'
+  # gem 'bson_ext'
+
+  # MySQL
+  gem 'mysql2'
+
+  # Kafka
+  # gem 'kafka-rb'
+end
+
+
 # Framework for gluing code together.
 #
 # Provides
