@@ -72,6 +72,13 @@ module Wukong
       root.join('config')
     end
 
+    # The directory this deploy pack uses for lib files.
+    #
+    # @return [Pathname]
+    def self.lib_dir
+      root.join('lib')
+    end
+    
     # The directory this deploy pack uses for temporary files.
     #
     # @return [Pathname]
