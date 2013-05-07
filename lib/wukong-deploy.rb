@@ -26,7 +26,10 @@ module Wukong
         settings.define(:skip,    :description => "Skip existing files", :type => :boolean, :default => false)
         settings.define(:force,   :description => "Overwrite existing files", :type => :boolean, :default => false)
       when 'wu-hadoop'
-        require_relative('wukong-deploy/extensions')
+        require_relative('wukong-deploy/hadoop_extensions')
+        settings[:command_prefix] = 'bundle exec'
+      when 'wu-storm'
+        require_relative('wukong-deploy/storm_extensions')
         settings[:command_prefix] = 'bundle exec'
       end
     end

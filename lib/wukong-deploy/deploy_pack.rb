@@ -1,5 +1,10 @@
 module Wukong
   module Deploy
+
+    # Return the name of this deploy pack.
+    def self.name
+      settings[:application]
+    end
     
     # Return the root directory of this deploy pack.
     #
@@ -155,9 +160,22 @@ module Wukong
     end
 
     # Read remote settings.
-    #
-    # FIXME -- not implemented yet.
     def self.read_remote_settings
+      return unless settings[:vcd]
+      if name.nil? || name.empty?
+        Wukong::Log.warn("Define the :application settings to give this deploy pack a name and be be able to read remote settings.")
+        return
+      end
+      topic = "deploy_packs.#{name}"
+      remote_settings = vayacondios_client.get(topic)
+      if remote_settings
+        if remote_settings.is_a?(Hash)
+          settings.merge(remote_settings)
+        else
+          Wukong::Log.warn("Remote settings for <#{topic}> must be a Hash.  Got: #{remote_settings}")
+        end
+      end
     end
+    
   end
 end
