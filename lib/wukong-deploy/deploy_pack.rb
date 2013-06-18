@@ -63,11 +63,11 @@ module Wukong
       @root
     end
 
-    # The directory this deploy pack keeps local, sample data in.
+    # The directory this deploy pack puts all its application code in.
     #
     # @return [Pathname]
-    def self.data_dir
-      root.join('data')
+    def self.app_dir
+      root.join('app')
     end
 
     # The directory this deploy pack uses for configuration files.
@@ -76,19 +76,19 @@ module Wukong
     def self.config_dir
       root.join('config')
     end
+    
+    # The directory this deploy pack keeps local, sample data in.
+    #
+    # @return [Pathname]
+    def self.data_dir
+      root.join('data')
+    end
 
     # The directory this deploy pack uses for lib files.
     #
     # @return [Pathname]
     def self.lib_dir
       root.join('lib')
-    end
-    
-    # The directory this deploy pack uses for temporary files.
-    #
-    # @return [Pathname]
-    def self.tmp_dir
-      root.join('tmp')
     end
 
     # The directory this deploy pack uses for logs.
@@ -98,11 +98,33 @@ module Wukong
       root.join('log')
     end
 
-    # The diretory this deploy pack puts all its application code in.
+    # The directory this deploy pack puts all its scripts in.
     #
     # @return [Pathname]
-    def self.app_dir
-      root.join('app')
+    def self.script_dir
+      root.join('script')
+    end
+    
+    # The directory this deploy pack puts all its Ruby unit tests.
+    #
+    # @return [Pathname]
+    def self.spec_dir
+      root.join('spec')
+    end
+
+    # The directory this deploy pack puts all its non-Ruby source
+    # code.
+    #
+    # @return [Pathname]
+    def self.src_dir
+      root.join('src')
+    end
+    
+    # The directory this deploy pack uses for temporary files.
+    #
+    # @return [Pathname]
+    def self.tmp_dir
+      root.join('tmp')
     end
     
     private
