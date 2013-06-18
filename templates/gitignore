@@ -35,5 +35,10 @@ a.out
 /doc/*
 /pkg/*
 
+# bundler -- do NOT add Gemfile.lock to this list
 .bundle
 bundle/*
+
+# configuration files that are dropped in outside of git
+config/development.yml
+config/deploy.yml
