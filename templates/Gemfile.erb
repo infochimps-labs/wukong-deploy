@@ -1,5 +1,5 @@
-# Use the public [RubyGems server](http://rubygems.org/)
-source                 :rubygems
+# Use the public [RubyGems server](https://rubygems.org/)
+source                 'https://rubygems.org'
 
 # = Application
 # 
@@ -12,7 +12,7 @@ source                 :rubygems
 #
 # here and then remember to run
 #
-#   $ bundle install --standalone
+#   $ bundle install
 #
 # Here's a link to the [Bundler documentation](http://gembundler.com/)
 # for your convenience.
@@ -46,6 +46,7 @@ gem 'wonderdog',              '0.1.0'
 # Provides
 #
 #   - wu-storm
+#   - wu-bolt
 gem 'wukong-storm',           '0.1.0'
 
 # Lets you load JSON blobs into data stores.
@@ -56,27 +57,49 @@ gem 'wukong-storm',           '0.1.0'
 #   - wu-source
 gem 'wukong-load',            '0.1.0'
 
-# If you want to use wu-load, you'll likely have to enable the various
-# gems required for the database(s) you're interested in here.
+# If you want to use wu-load with certain databases you may have to
+# enable the various gems required for the database(s) you're
+# interested in here.
 group :load do
-  # MongoDB
+
+  #
+  # Already required by one or more Wukong plugins:
+  #
+  #   - Kafka
+  #
+  # Not required because uses Ruby standard library to connect:
+  #
+  #   - ElasticSearch
+  #
+  
+  # Enable MongoDB
+  # 
   # gem 'mongo'
   # gem 'bson_ext'
 
-  # MySQL
-  gem 'mysql2'
-
-  # Kafka
-  # gem 'kafka-rb'
+  # Enable MySQL
+  # 
+  # gem 'mysql2'
 end
 
-
-# Framework for gluing code together.
+# Framework for gluing Wukong plugins together into a deploy pack.
 #
 # Provides
 #
 #   - wu-deploy
 gem 'wukong-deploy',          '0.1.0'
+
+# Provides metadata about a deploy pack.
+#
+# Provides
+#
+#  - wu-meta
+#
+gem 'wukong-meta',            '0.1.0'
+
+# Integrates Wukong processors with Vayacondios.
+#
+gem 'wukong-vayacondios',     '0.1.0'
 
 group :development do
   gem 'yard'
