@@ -94,55 +94,66 @@ want to run `rbenv exec bundle install`.
 
 ### Configuration
 
-Your deploy pack doesn't need any configuration out of the box.  As
-you begin to extend it you may add functionality which benefits from
-the ability to be configured.
+The deploy pack uses configuration at several different layers.
 
-Put any configuration you want shared across all environments into the
-file `config/settings.yml`.  Override this with environment-specific
-configuration in the appropriate file within `config/environments`.
+The simplest layer is settings passed to `wu` programs on the
+command-line.  These settings have the highest precedence and will
+always be read.
 
-As an example, you may write a processor like this:
+When booting any of the `wu` tools the deploy pack will also read and
+merge settings from the following configuration files, in order of
+**increasing** precedence:
+
+1. `config/settings.yml`
+2. `config/settings/*.yml` if present, without any guarantee as to order
+3. `config/environments/[environment].yml`
+4. `config/environments/[environment]/*.yml` if present, without any guarantee as to order
+5. `config/deploy.yml` if present (this file should be ignored by version control)
+6. `config/environments/deploy-[environment].yml` if present (this file should be ignored by version control)
+
+Finally, if interaction with Vayacondios is turned on, settings will
+also be read from a Vayacondios stash (see the <a
+href="#vayacondios>Vayacondios section</a> below).
+
+Completely merged and resolved configuration settings are accessible
+globally (once the Wukong framework has been booted) via the
+`Wukong::Deploy.settings` object.  Any piece of code in a model,
+processor, dataflow, or elsewhere can read and write to this object.
+
+Processors will *automatically* read settings for their fields from a
+subhash within this global settings object.  Given a processor like
 
 ```ruby
-Wukong.procesor(:configurable_decorator) do
-  field :suffix, String, :default => '.'
-  def process record
-    yield [record, suffix].join
+Wukong.processor(:tokenizer) do
+  field :min_length, Integer, default: 2
+  def process line
+    ...
   end
 end
 ```
 
-This processor's `suffix` property can be set on the command-line:
-
-```
-$ cat input
-1
-2
-3
-$ cat input | wu-local configurable_decorator
-1.
-2.
-3.
-$ cat input | wu-local configurable_decorator --suffix=','
-1,
-2,
-3,
-
-You can also set the same property in a configuration file, scoped by
-the name of the processor:
+you can set override the value of its `min_length` field by putting
+the following section into any one of the configuration files above:
 
 ```yaml
-# in config/settings.yml
 ---
+# in config/settings.yml, for example
 
-configurable_decorator:
-  suffix: ,
+tokenizer:
+  min_length: 5
 ```
 
-which lets you the `--suffix` flag on the command-line while still
-overriding the default setting.  You can also put such settings in
-environment specific files within `config/environments`.
+which would now make the command
+
+```
+$ cat corpus.txt | wu local tokenizer
+```
+
+have the same effect as
+
+```
+$ cat corpus.txt | wu local tokenizer --min_length=5
+```
 
 ## File Structure
 
@@ -206,3 +217,200 @@ the underlying documentation for Wukong and its plugins, specifically:
 
 * on [Wukong](http://github.com/infochimps-labs/wukong/tree/3.0.0) so you understand the basic idea of a processor and how to glue processors together
 * on [Wukong-Hadoop](http://github.com/infochimps-labs/wukong-hadoop) so you understand how to move between local and Hadoop modes for batch analytics
+
+
+<a target="#vayacondios">
+## Interacting with Vayacondios
+
+[Vayacondios](http://github.com/infochimps-labs/vayacondios) is a
+program which makes it easy to for clients to announce events or read
+and write settings to and from a central server.
+
+The basic objects of Vayacondios are **stash** and the **event**:
+
+* a **stash** is an "object", a "configuration", or "setting" designed to be shared among many services
+* an **event** is a "fact", "measurement", or "metric" announced by an arbitrary service, possibly related to some stash
+
+Stashes and events are organized in two levels.
+
+The top-level is the **organization**.  Data from multiple
+organizations is stored together but accessed separately by a running
+Vayacondios server.  An organization could be the name of a user,
+workgroup, application, or service using Vayacondios.
+
+The next level is the **topic**.  Each topic within Vayacondios has a
+single stash and can have multiple events.  An "object" like a server,
+a database, an application, a service, or a user maps to the concept
+of "topic".
+
+Every `wu` tool running within a deploy pack takes an additional
+option `--vcd` which turns on or off interactions with Vayacondios.
+This option can be specified at runtime on the command-line as well as
+via a configuration file.  When not running "in Vayacondios mode"
+(with `--vcd` was not passed), interactions with Vayacondios will be
+logged instead of transmitted and received.
+
+### Configuring Vayacondios access
+
+If you don't intend to interact with a Vayacondios server, you can
+just set `vcd` to `false` for your whole environment and skip this
+section (as is done, for example, in the `test` environment by
+default).
+
+If you intend to interact with Vayacondios then you need to also
+specify the `vcd_host` and `vcd_port` options which otherwise default
+to the usual Vayacondios server port running on localhost.
+
+```yaml
+---
+# in config/environments/production.yml
+vcd_host: 10.123.123.123
+vcd_port: 9000
+```
+
+Vayacondios also requires that all events and stashes are stored under
+a given organization name.  The Vayacondios organization, which will
+likely be shared across all environments of your application, is
+usually set at the top-level:
+
+```yaml
+---
+# in config/settings.yml
+organization: my_company
+```
+
+### Handle out of band event data with Events
+
+Despite being designed to be powerful and scalable, Vayacondios is not
+the appropriate store for high-volume, high-throughput,
+mission-critical data which must be persisited over the long-term.
+Instead it should be used for "out of band" data, which is typically
+much smaller in volume and throughput than the main body of a
+dataflow.  Examples of such out of band events include:
+
+* signalling some intermittend or runtime error
+* warning that some event was bad or suspicious
+* logging an error
+* registering some periodic metric
+* signaling a change in state
+
+Announcements can be made from anywhere within the Wukong framework by
+accessing the `Wukong::Deploy.vayacondios_client` object but the most
+common approach is to announce events within a processor or within a
+dataflow.
+
+#### Announcing from a processor
+
+The `Wukong::Processor#announce` method can be used to directly send
+an event to Vayacondios on a given topic.
+
+```ruby
+Wukong.processor(:parser) do
+  def process line
+    yield parse!(line)
+  rescue ParseError => e
+    announce "parser.errors", line: line
+  end
+end
+```
+
+It's important when setting up an announcement like this that you
+consider how often this piece of code will actually send events to
+Vayacondios.  If a `ParseError` is triggered once in every 10,000
+lines, this may be perfectly fine to be running in production.  If 1
+in 10 lines causes a similar error, this may not be the right
+approach.
+
+#### Announcing from a dataflow
+
+The `announce` processor can be used to send all announce all incoming
+events to Vayacondios.  Here's an example flow which makes use of it:
+
+```ruby
+Wukong.dataflow(:parse_source) do
+  parser |
+  [
+    select(&:valid?) | ... | to_json,
+	select(&:invalid?) | announce(topic: "invalid_records")
+  ]
+end
+```
+
+Just as in the above example with a processor, it's important that the
+flow through the announce processor is not incredibly high-volume.
+
+The `announce` processor is terminal; it yields no output records.
+
+### Allow dynamic configuration with Stashes
+
+The deploy pack inside a backend system like Hadoop or Storm can fetch
+stashes from Vayacondios during runtime.  Other systems external to
+the deploy pack can simultaneously be writing data into these same
+stashes in Vayacondios, allowing for a lightweight, two-way
+communication stream between the deploy pack and arbitrary external
+resources, mediated by a key-value store (the Vayacondios stash).
+
+Stashes can be read and written from anywhere within the Wukong
+framework by accessing the `Wukong::Deploy.vayacondios_client` object
+but there are two special places where encapsulated, remote settings
+are very useful.
+
+#### Dynamic settings for the deploy pack itself
+
+Each deploy pack, as an application, can fetch a stash of settings
+from Vayacondios and use this as bootup time in the same way it uses a
+configuration file ond disk.  All that is required is a Vayacondios
+stash topic name.  This is furnished by providing to the deploy pack
+an `application` name in a configuration file, usually the top-level
+one:
+
+```yaml
+---
+# in config/settings.yml, for example
+
+application: my_app
+```
+
+When any `wu` tool is launched within the deploy pack with the `--vcd`
+option (possibly set an an environment-wide level via a configuration
+file) then remote settings from Vayacondios for the `application` will
+be pulled at boot-time and merged into the local settings from
+configuration files and the command-line.
+
+#### Dynamic settings for processors
+
+The processor `tokenizer` in the deploy pack with application name
+`my_app` defaults to using the stash with topic
+`processors.my_app-tokenizer` in Vayacondios to store its settings
+(this can be changed by overriding the `Wukong::Processor#vcd_topic`
+method).
+
+These settings, if they exist, can be retrieved and merged into the
+processor's current fields at anytime using the
+`Wukong::Processor#update_settings`.  A common use case is to want to
+update a processor's fields every 30 seconds, or similar.  This is
+most easily accomplished via the
+`Wukong::Processor#update_settings_every` method.  Here's an example
+
+```ruby
+Wukong.processor(:tagger) do
+  field :tags, Array, doc: "List of tags to check", default: []
+
+  def setup
+    update_settings_every(30)
+  end
+  
+  def process record
+    tags.each do |tag|
+	  ...
+	end
+  end
+end
+```
+
+The `tags` field of this processor will be updated every 30 seconds
+with the latest values from Vayacondios.
+
+The `Wukong::Processor#save_settings` and
+`Wukong::Processor#save_settings_every` and methods can be used to
+save settings from a processor **to** Vayacondios.
