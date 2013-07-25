@@ -68,6 +68,8 @@ module Wukong
          config/environments/test.yml
          config/environments/production.yml
 
+         config/initializers/event_machine.rb
+
          Gemfile
          Rakefile
          README.md

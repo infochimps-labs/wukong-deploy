@@ -94,7 +94,25 @@ want to run `rbenv exec bundle install`.
 
 ### Configuration
 
-The deploy pack uses configuration at several different layers.
+#### Configuring the Environment
+
+Before any of the `wu` programs can run, the Ruby process must first
+boot up, require Wukong and all necessary dependencies (such as
+'event-machine') and plugins (such as the deploy pack plugin
+`wukong-deploy`), and then hand over control to the `wu` program.
+
+The following Ruby files are loaded in order.  Each file is
+responsible for configuring some part of this runtime environment:
+
+1. `config/environment` -- requires the rest of the files and adds any additional environmental code
+2. `config/application` -- defines the load order of external libraries, Wukong plugins, and application code
+3. `config/boot` -- defines how and where the Ruby process will look for code dependencies (through Bundler)
+4. `config/initializers/*.rb` -- non-Wukong configuration for external libraries or application code can live here
+
+#### Configuring the Application
+
+The application a given deploy pack is running can be configured at
+several different layers.
 
 The simplest layer is settings passed to `wu` programs on the
 command-line.  These settings have the highest precedence and will
