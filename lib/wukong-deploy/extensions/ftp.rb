@@ -2,6 +2,14 @@ module Wukong
   module Deploy
     module FTP
 
+      # Makes the `MirroredFiles#dir` choose the
+      # `Wukong::Deploy.tmp_dir`.
+      module MirroredFilesOverride
+        def dir
+          Wukong::Deploy.tmp_dir.to_s
+        end
+      end
+
       # Provides methods that make it easier to write an FTP source
       # into Vayacondios.
       module VayacondiosMethods
@@ -40,9 +48,10 @@ module Wukong
           Wukong::Deploy.vayacondios_client.set(source.vayacondios_topic, nil, source)
         end
 
-        def after_each source, paths_processed
-          super(source, paths_processed)
-          Wukong::Deploy.vayacondios_client.announce(source.vayacondios_topic, mirrored: true, paths: paths_processed)
+        def after_each source
+          super(source)
+          return if source.finished_files.empty?
+          Wukong::Deploy.vayacondios_client.announce(source.vayacondios_topic, mirrored: true, paths: source.finished_files.keys)
         end
 
         def on_error source, error
@@ -51,7 +60,5 @@ module Wukong
         end
       end
     end
-    
   end
 end
-

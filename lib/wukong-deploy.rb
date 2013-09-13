@@ -33,6 +33,8 @@ module Wukong
         settings[:command_prefix] = 'bundle exec'
       when 'wu-ftp'
         require_relative('wukong-deploy/ftp_extensions')
+      when 'wu-s3'
+        require_relative('wukong-deploy/s3_extensions')
       end
     end
 
