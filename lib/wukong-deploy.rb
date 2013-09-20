@@ -31,10 +31,10 @@ module Wukong
       when 'wu-storm'
         require_relative('wukong-deploy/storm_extensions')
         settings[:command_prefix] = 'bundle exec'
-      when 'wu-ftp'
-        require_relative('wukong-deploy/ftp_extensions')
-      when 'wu-s3'
-        require_relative('wukong-deploy/s3_extensions')
+      when 'wu-dump'
+        require_relative('wukong-deploy/dump_extensions')
+      when 'wu-sync', 'wu-sync-all'
+        require_relative('wukong-deploy/sync_extensions')
       end
     end
 
