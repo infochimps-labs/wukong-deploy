@@ -31,7 +31,7 @@ Gem::Specification.new do |gem|
   EOF
 
   gem.files         = `git ls-files`.split("\n")
-  gem.executables   = ['wu-deploy','wu']
+  gem.executables   = ['wu-deploy']
   gem.test_files    = gem.files.grep(/^spec/)
   gem.require_paths = ['lib']
 
