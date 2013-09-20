@@ -190,13 +190,7 @@ module Wukong
       end
       topic = "deploy_packs.#{name}"
       remote_settings = vayacondios_client.get(topic)
-      if remote_settings
-        if remote_settings.is_a?(Hash)
-          settings.merge(remote_settings)
-        else
-          Wukong::Log.warn("Remote settings for <#{topic}> must be a Hash.  Got: #{remote_settings}")
-        end
-      end
+      settings.merge(remote_settings) if remote_settings.success?
     end
     
   end
