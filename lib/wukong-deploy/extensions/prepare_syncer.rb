@@ -29,6 +29,7 @@ module Wukong
         super(error)
         Wukong::Deploy.vayacondios_client.announce(vayacondios_topic, {
           success: false,
+          step:    'prepare',
           error:   error.class,
           message: error.message,
         })
