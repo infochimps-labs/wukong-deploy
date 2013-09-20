@@ -19,7 +19,7 @@ module Wukong
           success: success?,
           step:    'prepare',
           files:   files,
-        })
+        }.tap { |e| e[:duration] = duration if duration })
         Wukong::Deploy.vayacondios_client.set!(vayacondios_topic, "prepare.last", { state: (success? ? 1 : 0), time: Time.now.utc.to_i })
       end
 
