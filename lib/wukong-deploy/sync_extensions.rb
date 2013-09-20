@@ -1,7 +1,7 @@
 require_relative('extensions/uses_lockfile')
 require_relative('extensions/uses_file_state')
 require_relative('extensions/ftp_syncer')
-require_relative('extensions/archive_syncer')
+require_relative('extensions/prepare_syncer')
 require_relative('extensions/s3_syncer')
 
 Wukong::Load::SyncRunner.class_eval do
@@ -15,12 +15,12 @@ end
 Wukong::Load::FTPSyncer.class_eval do
   include Wukong::Deploy::FTPSyncerOverride
 end
-Wukong::Load::ArchiveSyncer.class_eval do
+Wukong::Load::PrepareSyncer.class_eval do
   include Wukong::Deploy::UsesFileStateOverride
-  include Wukong::Deploy::ArchiveSyncerOverride
+  include Wukong::Deploy::PrepareSyncerOverride
 end
-Wukong::Load::ArchiveSyncer::Handler.class_eval do
-  include Wukong::Deploy::ArchiveSyncerOverride::HandlerOverride
+Wukong::Load::PrepareSyncer::Handler.class_eval do
+  include Wukong::Deploy::PrepareSyncerOverride::HandlerOverride
 end
 Wukong::Load::S3Syncer.class_eval do
   include Wukong::Deploy::S3SyncerOverride
