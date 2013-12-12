@@ -32,6 +32,7 @@ module Wukong
           step:    's3',
           error:   error.class,
           message: error.message,
+          bytes:   bytes,
         })
         Wukong::Deploy.vayacondios_client.set!(vayacondios_topic, "s3.last", { state: 0, time: Time.now.utc.to_i })
       end

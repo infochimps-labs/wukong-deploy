@@ -18,6 +18,7 @@ module Wukong
         Wukong::Deploy.vayacondios_client.announce(vayacondios_topic, {
           success: true,
           step:    'ftp',
+          files:   self.files,
         }.tap { |e| e[:duration] = duration if duration })
         Wukong::Deploy.vayacondios_client.set!(vayacondios_topic, "ftp.last", { state: 1, time: Time.now.utc.to_i })
       end
@@ -31,6 +32,7 @@ module Wukong
           step:    'ftp',
           error:   error.class,
           message: error.message,
+          files:   self.files,
         })
         Wukong::Deploy.vayacondios_client.set!(vayacondios_topic, "ftp.last", { state: 0, time: Time.now.utc.to_i })
       end

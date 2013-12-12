@@ -18,7 +18,8 @@ module Wukong
         Wukong::Deploy.vayacondios_client.announce(vayacondios_topic, {
           success: success?,
           step:    'prepare',
-          files:   files,
+          counts:   counts,
+          files:    files,
         }.tap { |e| e[:duration] = duration if duration })
         Wukong::Deploy.vayacondios_client.set!(vayacondios_topic, "prepare.last", { state: (success? ? 1 : 0), time: Time.now.utc.to_i })
       end
@@ -32,6 +33,8 @@ module Wukong
           step:    'prepare',
           error:   error.class,
           message: error.message,
+          counts:   counts,
+          files:    files,
         })
         Wukong::Deploy.vayacondios_client.set!(vayacondios_topic, "prepare.last", { state: 0, time: Time.now.utc.to_i })
       end
@@ -76,7 +79,7 @@ module Wukong
           Wukong::Deploy.vayacondios_client.announce(vayacondios_topic, {
             success: true,
             step:    'prepare',
-            path:    relative_path_of(original, settings[:input]),
+            path:    fragment_for(original),
             size:    File.size(original),
           })
         end
@@ -90,7 +93,7 @@ module Wukong
           Wukong::Deploy.vayacondios_client.announce(vayacondios_topic, {
             success: false,
             step:    'prepare',
-            path:    relative_path_of(original, settings[:input]),
+            path:    fragment_for(original),
             error:   error.class,
             message: error.message
           })
