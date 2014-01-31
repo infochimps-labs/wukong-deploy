@@ -23,7 +23,7 @@ module Wukong
         now = Time.now.utc.to_i
         last_ftp_sync_summary = { state: 1, time: now}
         last_ftp_sync_summary[:data] = now unless self.files.empty?
-        Wukong::Deploy.vayacondios_client.set!(vayacondios_topic, "ftp.last", last_ftp_sync_summary)
+        Wukong::Deploy.vayacondios_client.set(vayacondios_topic, "ftp.last", last_ftp_sync_summary)
       end
 
       # Announces an error during a sync and updates the last sync
