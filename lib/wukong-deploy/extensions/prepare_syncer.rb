@@ -8,7 +8,7 @@ module Wukong
       # Saves the syncer as a stash in Vayacondios.
       def before_sync
         super()
-        Wukong::Deploy.vayacondios_client.set!(vayacondios_topic, 'prepare', self)
+        Wukong::Deploy.vayacondios_client.set(vayacondios_topic, 'prepare', self)
       end
 
       # Announces a successful sync and updates the last sync state
@@ -21,7 +21,7 @@ module Wukong
           counts:   counts,
           files:    files,
         }.tap { |e| e[:duration] = duration if duration })
-        Wukong::Deploy.vayacondios_client.set!(vayacondios_topic, "prepare.last", { state: (success? ? 1 : 0), time: Time.now.utc.to_i })
+        Wukong::Deploy.vayacondios_client.set(vayacondios_topic, "prepare.last", { state: (success? ? 1 : 0), time: Time.now.utc.to_i })
       end
 
       # Announces an error during a sync and updates the last sync
@@ -36,7 +36,7 @@ module Wukong
           counts:   counts,
           files:    files,
         })
-        Wukong::Deploy.vayacondios_client.set!(vayacondios_topic, "prepare.last", { state: 0, time: Time.now.utc.to_i })
+        Wukong::Deploy.vayacondios_client.set(vayacondios_topic, "prepare.last", { state: 0, time: Time.now.utc.to_i })
       end
       
       # Returns the Vayacondios topic for this PrepareSyncer.

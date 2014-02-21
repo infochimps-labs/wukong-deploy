@@ -8,7 +8,7 @@ module Wukong
       # Saves the syncer as a stash in Vayacondios.
       def before_sync
         super()
-        Wukong::Deploy.vayacondios_client.set!(vayacondios_topic, 's3', self)
+        Wukong::Deploy.vayacondios_client.set(vayacondios_topic, 's3', self)
       end
 
       # Announces a successful sync and updates the last sync state
@@ -20,7 +20,7 @@ module Wukong
           step:    's3',
           bytes: (bytes || 0),
         }.tap { |e| e[:duration] = duration if duration })
-        Wukong::Deploy.vayacondios_client.set!(vayacondios_topic, "s3.last", { state: 1, time: Time.now.utc.to_i })
+        Wukong::Deploy.vayacondios_client.set(vayacondios_topic, "s3.last", { state: 1, time: Time.now.utc.to_i })
       end
 
       # Announces an error during a sync and updates the last sync
@@ -34,7 +34,7 @@ module Wukong
           message: error.message,
           bytes:   bytes,
         })
-        Wukong::Deploy.vayacondios_client.set!(vayacondios_topic, "s3.last", { state: 0, time: Time.now.utc.to_i })
+        Wukong::Deploy.vayacondios_client.set(vayacondios_topic, "s3.last", { state: 0, time: Time.now.utc.to_i })
       end
       
       # Returns the Vayacondios topic for this S3Syncer.

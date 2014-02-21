@@ -8,7 +8,7 @@ module Wukong
       # Saves the syncer as a stash in Vayacondios.
       def before_sync
         super()
-        Wukong::Deploy.vayacondios_client.set!(vayacondios_topic, 'ftp', self)
+        Wukong::Deploy.vayacondios_client.set(vayacondios_topic, 'ftp', self)
       end
 
       # Announces a successful sync and updates the last sync state
@@ -37,7 +37,7 @@ module Wukong
           message: error.message,
           files:   self.files,
         })
-        Wukong::Deploy.vayacondios_client.set!(vayacondios_topic, "ftp.last", { state: 0, time: Time.now.utc.to_i })
+        Wukong::Deploy.vayacondios_client.set(vayacondios_topic, "ftp.last", { state: 0, time: Time.now.utc.to_i })
       end
       
       # Returns the Vayacondios topic for this FTP syncer.
